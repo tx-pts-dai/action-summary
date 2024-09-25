@@ -1,0 +1,49 @@
+on:
+  push:
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Generate 10KB of Text
+        id: generate_text
+        run: |
+          # Generate 10KB of text (10,000 characters)
+          TEXT=$(head -c 206670 < /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 100000)
+
+          echo "text=$TEXT" >> $GITHUB_OUTPUT
+
+      - name: Generate 1MB of Text
+        id: generate_file
+        run: |
+          # Generate 1MB of text (1,000,000 characters)
+          head -c 200000 < /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 100000 > generated_text.txt
+          # Set the generated text as an output
+          echo "file=generated_text.txt" >> $GITHUB_OUTPUT
+
+      - name: Generate 1MB String Summary
+        uses: ./
+        with:
+          path: ${{ steps.generate_file.outputs.file }}
+          max_size: 1048576  # 1MB limit
+          summary_header: '1MB String'
+
+      - name: Generate String Summary
+        uses: ./
+        with:
+          string: |
+            This is a long string that we want to process.
+            It can be any string and the action will summarize it.
+          max_size: 1048576  # 1MB limit
+          summary_header: 'Short Text String'
+
+      - name: Generate 10K String Summary
+        uses: ./
+        with:
+          string: ${{ steps.generate_text.outputs.text }}
+          max_size: 1048576  # 1MB limit
+          summary_header: '10KB String'
+
+
