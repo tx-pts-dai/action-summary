@@ -26,8 +26,11 @@ runs:
   steps:
     - name: Validate Inputs
       shell: bash
+      env:
+        INPUT_STRING: ${{ inputs.string }}
+        INPUT_PATH: ${{ inputs.path }}
       run: |
-        if [[ (-z "${{ inputs.string }}" && -z "${{ inputs.path }}" ) || (-n "${{ inputs.string }}" && -n "${{ inputs.path }}" ) ]]; then
+        if [[ (-z "$INPUT_STRING" && -z "$INPUT_PATH" ) || (-n "$INPUT_STRING" && -n "$INPUT_PATH" ) ]]; then
           echo "Error: Provide either string or path, but not both."
           exit 1
         fi
@@ -38,15 +41,17 @@ runs:
         MAX_SIZE: ${{ inputs.max_size }}
         SUMMARY_HEADER: ${{ inputs.summary_header }}
         DATA_TYPE: ${{ inputs.data_type }}
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_STRING: ${{ inputs.string }}
       run: |
-        if [[ -n "${{ inputs.path }}" ]]; then
-          if [[ ! -f "${{ inputs.path }}" ]]; then
-            echo "Error: Input file '${{ inputs.path }}' not found."
+        if [[ -n "$INPUT_PATH" ]]; then
+          if [[ ! -f "$INPUT_PATH" ]]; then
+            echo "Error: Input file ${INPUT_PATH} not found."
             exit 1
           fi
-          INPUT_DATA=$(cat "${{ inputs.path }}")
+          INPUT_DATA=$(cat "$INPUT_PATH")
         else
-          INPUT_DATA="${{ inputs.string }}"
+          INPUT_DATA="$INPUT_STRING"
         fi
 
         FILE_SIZE=${#INPUT_DATA}
