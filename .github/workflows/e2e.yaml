@@ -58,5 +58,18 @@ jobs:
               "sitemaps_s3_bucket_policy": "{\"arn\":\"arn:aws:iam::269132892972:policy/disco-sitemaps20240925083117544800000003\",\"attachment_count\":1,\"description\":\"Allows to access the sitemaps S3 bucket\",\"id\":\"arn:aws:iam::269132892972:policy/disco-sitemaps20240925083117544800000003\",\"name\":\"disco-sitemaps20240925083117544800000003\",\"name_prefix\":\"disco-sitemaps\",\"path\":\"/\",\"policy\":\"{\\\"Statement\\\":[{\\\"Action\\\":\\\"s3:*\\\",\\\"Effect\\\":\\\"Allow\\\",\\\"Resource\\\":[\\\"arn:aws:s3:::disco-sitemaps-dev-disc-3274/*\\\",\\\"arn:aws:s3:::disco-sitemaps-dev-disc-3274\\\"]}],\\\"Version\\\":\\\"2012-10-17\\\"}\",\"policy_id\":\"ANPAT5KMSBMWOTLJM6BDO\",\"tags\":{},\"tags_all\":{}}",
               "sitemaps_s3_bucket_url": "disco-sitemaps-dev-disc-3274.s3.amazonaws.com"
             }
-          summary_header: 'Nested Double Qouted JSON'
+          summary_header: 'Nested Double Quoted JSON'
+          data_type: 'json'
+
+      - name: Generate complex nested unescaped json
+        uses: ./
+        with:
+          string: |
+            {
+              "text_plan_path": ".dflook-terraform-github-actions/gbvfjwlp/plan.txt",
+              "json_plan_path": ".dflook-terraform-github-actions/gbvfjwlp/plan.json",
+              "iam_for_lambda_role": {"arn":"arn:aws:iam::269132892972:role/sitemaps_for_lambda20240925083113621800000001"},
+              "sitemaps_s3_bucket": {"acceleration_status":"","arn":"arn:aws:s3:::disco-sitemaps-dev-disc-3274","bucket":"disco-sitemaps-dev-disc-3274"}
+            }
+          summary_header: 'Nested Unescaped JSON'
           data_type: 'json'
