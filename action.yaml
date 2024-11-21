@@ -44,32 +44,4 @@ runs:
         INPUT_PATH: ${{ inputs.path }}
         INPUT_STRING: ${{ inputs.string }}
       run: |
-        if [[ -n "$INPUT_PATH" ]]; then
-          if [[ ! -f "$INPUT_PATH" ]]; then
-            echo "Error: Input file ${INPUT_PATH} not found."
-            exit 1
-          fi
-          INPUT_DATA=$(cat "$INPUT_PATH")
-        else
-          INPUT_DATA="$INPUT_STRING"
-        fi
-
-        FILE_SIZE=${#INPUT_DATA}
-
-        if [ "$FILE_SIZE" -gt "$MAX_SIZE" ]; then
-          echo ":warning: String content is too long to be displayed (${FILE_SIZE} chars) after filtering. It exceeds the ${MAX_SIZE} byte limit."
-          echo ":warning: Skipping content display due to size."
-          exit 0
-        fi
-
-        CLEANED_DATA=$(echo "$INPUT_DATA" | sed -E 's/\\"/"/g' | sed -E 's/"\{(.*)\}"/{\1}/g' | sed -E 's/\["(.*)"\]/[\1]/g')
-
-        {
-          echo "## $SUMMARY_HEADER"
-          echo "<details><summary>Click to expand</summary>"
-          echo ""
-          echo '```'${DATA_TYPE}
-          echo "$CLEANED_DATA"
-          echo '```'
-          echo "</details>"
-        } >> $GITHUB_STEP_SUMMARY
+        python3 src/main.py
